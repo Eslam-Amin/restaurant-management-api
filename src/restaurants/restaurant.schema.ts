@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { CuisineEnum } from './enums/cuisine.enum';
 
 @Schema({ timestamps: true })
 export class Restaurant {
@@ -14,7 +15,7 @@ export class Restaurant {
 
   @Prop({
     type: [String],
-    enum: ['Fried', 'Asian', 'Burgers', 'Italian', 'Mexican', 'Dessert'],
+    enum: CuisineEnum,
     validate: [
       (val: string[]) => val.length >= 1 && val.length <= 3,
       'Must have between 1 to 3 cuisines',

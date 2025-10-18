@@ -5,9 +5,11 @@ import {
   ArrayMaxSize,
   IsNotEmpty,
   ValidateNested,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LocationDto } from '../../dtos/location.dto';
+import { CuisineEnum } from '../enums/cuisine.enum';
 
 export class CreateRestaurantDto {
   @IsString()
@@ -25,8 +27,8 @@ export class CreateRestaurantDto {
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(3)
-  @IsString({ each: true })
-  cuisines: string[];
+  @IsEnum(CuisineEnum, { each: true })
+  cuisines: CuisineEnum[];
 
   @ValidateNested()
   @Type(() => LocationDto)
