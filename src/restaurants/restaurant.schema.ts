@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { CuisineEnum } from './enums/cuisine.enum';
+import { CuisineEnum } from '../enums/cuisine.enum';
 
 @Schema({ timestamps: true })
 export class Restaurant {
