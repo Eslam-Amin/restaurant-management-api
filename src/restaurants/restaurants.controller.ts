@@ -61,11 +61,18 @@ export class RestaurantsController {
     @Param('id') id: string,
     @Body() body: Partial<CreateRestaurantDto>,
   ) {
-    return this.restaurantsService.updateOne(id, body);
+    return {
+      message: 'Restaurant updated successfully',
+      data: await this.restaurantsService.updateOne(id, body),
+    };
   }
 
   @Delete('/:id')
   async delete(@Param('id') id: string) {
-    return this.restaurantsService.deleteOne(id);
+    await this.restaurantsService.deleteOne(id);
+    return {
+      message: 'Restaurant deleted successfully',
+      data: {},
+    };
   }
 }

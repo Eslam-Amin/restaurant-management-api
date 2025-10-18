@@ -60,18 +60,18 @@ export class RestaurantsService {
     id: string,
     updateDto: Partial<CreateRestaurantDto>,
   ): Promise<Restaurant> {
-    const updated = await this.restaurantModel.findByIdAndUpdate(
+    const updatedRestaurant = await this.restaurantModel.findByIdAndUpdate(
       id,
       updateDto,
       { new: true },
     );
-    if (!updated) throw new NotFoundException('Restaurant not found');
-    return updated;
+    if (!updatedRestaurant) throw new NotFoundException('Restaurant not found');
+    return updatedRestaurant;
   }
 
   async deleteOne(id: string): Promise<void> {
-    const result = await this.restaurantModel.findByIdAndDelete(id);
-    if (!result) throw new NotFoundException('Restaurant not found');
+    const deletedRestaurant = await this.restaurantModel.findByIdAndDelete(id);
+    if (!deletedRestaurant) throw new NotFoundException('Restaurant not found');
   }
 
   async findNearby(lat: number, lng: number): Promise<Restaurant[]> {
