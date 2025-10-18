@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LocationDto } from '../../dtos/location.dto';
-import { CuisineEnum } from '../enums/cuisine.enum';
+import { CuisineEnum } from '../../enums/cuisine.enum';
 
 export class CreateRestaurantDto {
   @IsString()
