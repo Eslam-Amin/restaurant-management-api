@@ -1,13 +1,14 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { APP_PIPE } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+const cookieSession = require('cookie-session');
 
 @Module({
   imports: [
@@ -33,4 +34,15 @@ import { AuthModule } from './auth/auth.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private configService: ConfigService) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: [this.configService.get('COOKIE_KEY')],
+        }),
+      )
+      .forRoutes('*');
+  }
+}
