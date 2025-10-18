@@ -21,7 +21,7 @@ export class Restaurant extends Document {
       'Must have between 1 to 3 cuisines',
     ],
   })
-  cuisines: string[];
+  cuisines: CuisineEnum[];
 
   @Prop({
     type: {
