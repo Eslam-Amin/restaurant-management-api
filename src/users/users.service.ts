@@ -58,4 +58,15 @@ export class UsersService {
     const user = await this.userModel.findOne(filter);
     return user;
   }
+
+  async updateOne(
+    id: Types.ObjectId | string,
+    attrs: Partial<User>,
+  ): Promise<User> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, attrs, {
+      new: true,
+    });
+    if (!updatedUser) throw new NotFoundException('User not found');
+    return updatedUser;
+  }
 }
