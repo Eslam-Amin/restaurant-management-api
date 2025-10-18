@@ -26,18 +26,21 @@ export class Restaurant {
     type: {
       type: String,
       enum: ['Point'],
+      required: true,
       default: 'Point',
     },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   })
-  locationType: string;
-
-  @Prop({
-    type: [Number], // [longitude, latitude]
-    required: true,
-    index: '2dsphere',
-  })
-  coordinates: number[];
+  location: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
 }
+const RestaurantSchema = SchemaFactory.createForClass(Restaurant);
+RestaurantSchema.index({ location: '2dsphere' });
 
 export type RestaurantDocument = Restaurant & Document;
-export const RestaurantSchema = SchemaFactory.createForClass(Restaurant);
+export { RestaurantSchema };
