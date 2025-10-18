@@ -77,16 +77,58 @@ export class RestaurantsService {
     if (!deletedRestaurant) throw new NotFoundException('Restaurant not found');
   }
 
-  async findNearby(lat: number, lng: number): Promise<Restaurant[]> {
-    return this.restaurantModel.aggregate([
+  async findNearby(
+    lat: number,
+    lng: number,
+    page: number,
+    limit: number,
+  ): Promise<{ restaurantsCount: number; restaurants: Restaurant[] }> {
+    const skip = (page - 1) * limit;
+
+    const result = await this.restaurantModel.aggregate([
       {
         $geoNear: {
-          near: { type: 'Point', coordinates: [lng, lat] },
+          near: {
+            type: 'Point',
+            coordinates: [lng, lat],
+          },
+          maxDistance: 50000, // adjust as needed
           distanceField: 'distance',
-          maxDistance: 1000, // 1 KM
           spherical: true,
         },
       },
+      {
+        $facet: {
+          // First sub-pipeline to return the list of restaurants
+          restaurants: [
+            {
+              // Skipping for pagination, if needed
+              $skip: skip,
+            },
+            {
+              // Limiting the number of results, adjust as needed
+              $limit: limit,
+            },
+          ],
+          // Second sub-pipeline to count the total number of restaurants
+          totalCount: [
+            {
+              $count: 'total',
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          restaurants: 1,
+          restaurantsCount: {
+            $arrayElemAt: ['$totalCount.total', 0],
+          },
+        },
+      },
     ]);
+    return {
+      ...result[0],
+    };
   }
 }
