@@ -7,11 +7,18 @@ import {
   Query,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { PaginationFilterDto } from '../dtos/pagination-filter.dto';
 import { LatLngDto } from 'src/dtos/lat-lng.dto';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
+import { User } from 'src/users/user.schema';
+import { Types } from 'mongoose';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UserDto } from 'src/users/dtos/user.dto';
 
 @Controller('restaurants')
 export class RestaurantsController {
@@ -87,6 +94,32 @@ export class RestaurantsController {
     return {
       message: 'Restaurant deleted successfully',
       data: {},
+    };
+  }
+
+  @Patch('/:id/follow')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async followToggle(
+    @Param('id') id: Types.ObjectId,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Restaurant has been Followed successfully',
+      data: await this.restaurantsService.follow(id, currentUser),
+    };
+  }
+
+  @Patch('/:id/unfollow')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async unFollowToggle(
+    @Param('id') id: Types.ObjectId,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Restaurant has been Unfollowed successfully',
+      data: await this.restaurantsService.unfollow(id, currentUser),
     };
   }
 }
