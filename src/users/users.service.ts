@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './user.schema';
 import { Model } from 'mongoose';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -9,4 +15,35 @@ export class UsersService {
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
   ) {}
+
+  createOne(createDto: CreateUserDto): Promise<User> {
+    try {
+      return this.userModel.create(createDto);
+    } catch (err) {
+      if (err.code === 11000) {
+        throw new ConflictException('User with this email already exists');
+      }
+      throw new InternalServerErrorException(
+        'Failed to create user due to => ' + err.message,
+      );
+    }
+  }
+
+  async findAll(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const [users, usersCount] = await Promise.all([
+      this.userModel.find().skip(skip).limit(limit),
+      this.userModel.countDocuments(),
+    ]);
+    return {
+      users,
+      usersCount,
+    };
+  }
+
+  async findOne(id: string) {
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
 }
