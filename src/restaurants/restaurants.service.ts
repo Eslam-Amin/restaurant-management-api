@@ -39,11 +39,14 @@ export class RestaurantsService {
     const filter = cuisine ? { cuisines: cuisine } : {};
     const skip = (page - 1) * limit;
 
-    const restaurantsCount = await this.restaurantModel.countDocuments(filter);
+    const restaurantsCount = await this.restaurantModel
+      .countDocuments(filter)
+      .collation({ strength: 2, locale: 'en' });
     const restaurants = await this.restaurantModel
       .find(filter)
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .collation({ strength: 2, locale: 'en' }); // strength 2 is to ignore case sensitivity in search
     return { restaurantsCount, restaurants };
   }
 
