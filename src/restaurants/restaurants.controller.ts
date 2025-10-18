@@ -11,6 +11,7 @@ import {
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { PaginationFilterDto } from '../dtos/pagination-filter.dto';
+import { LatLngDto } from 'src/dtos/lat-lng.dto';
 
 @Controller('restaurants')
 export class RestaurantsController {
@@ -44,8 +45,21 @@ export class RestaurantsController {
   }
 
   @Get('nearby')
-  async findNearby(@Query('lat') lat: number, @Query('lng') lng: number) {
-    return await this.restaurantsService.findNearby(lat, lng);
+  async findNearbyRestaurants(
+    @Query() { lat, lng }: LatLngDto,
+    @Query() { page, limit }: PaginationFilterDto,
+  ) {
+    const { restaurants = [], restaurantsCount = 0 } =
+      await this.restaurantsService.findNearby(lat, lng, page, limit);
+    return {
+      pagination: {
+        page,
+        limit,
+        totalDocs: restaurantsCount,
+        totalPages: Math.ceil(restaurantsCount / limit),
+      },
+      data: restaurants,
+    };
   }
 
   @Get('/:identifier')
