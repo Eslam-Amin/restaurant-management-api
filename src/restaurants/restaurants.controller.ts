@@ -18,7 +18,7 @@ export class RestaurantsController {
 
   @Post()
   async create(@Body() body: CreateRestaurantDto) {
-    const createdRestaurant = await this.restaurantsService.create(body);
+    const createdRestaurant = await this.restaurantsService.createOne(body);
     return {
       message: 'Restaurant created successfully',
       data: createdRestaurant,
@@ -61,11 +61,11 @@ export class RestaurantsController {
     @Param('id') id: string,
     @Body() body: Partial<CreateRestaurantDto>,
   ) {
-    return this.restaurantsService.update(id, body);
+    return this.restaurantsService.updateOne(id, body);
   }
 
   @Delete('/:id')
   async delete(@Param('id') id: string) {
-    return this.restaurantsService.delete(id);
+    return this.restaurantsService.deleteOne(id);
   }
 }

@@ -17,7 +17,7 @@ export class RestaurantsService {
     private restaurantModel: Model<RestaurantDocument>,
   ) {}
 
-  async create(createDto: CreateRestaurantDto): Promise<Restaurant> {
+  async createOne(createDto: CreateRestaurantDto): Promise<Restaurant> {
     try {
       const createdRestaurant = await this.restaurantModel.create(createDto);
       return createdRestaurant;
@@ -56,7 +56,7 @@ export class RestaurantsService {
     return restaurant;
   }
 
-  async update(
+  async updateOne(
     id: string,
     updateDto: Partial<CreateRestaurantDto>,
   ): Promise<Restaurant> {
@@ -69,7 +69,7 @@ export class RestaurantsService {
     return updated;
   }
 
-  async delete(id: string): Promise<void> {
+  async deleteOne(id: string): Promise<void> {
     const result = await this.restaurantModel.findByIdAndDelete(id);
     if (!result) throw new NotFoundException('Restaurant not found');
   }
