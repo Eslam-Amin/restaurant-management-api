@@ -7,6 +7,7 @@ import databaseConfig from './config/database.config';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { APP_PIPE } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     DatabaseModule,
     RestaurantsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
