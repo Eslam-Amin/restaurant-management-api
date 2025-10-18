@@ -57,7 +57,10 @@ export class RestaurantsController {
   }
 
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: any) {
+  async update(
+    @Param('id') id: string,
+    @Body() body: Partial<CreateRestaurantDto>,
+  ) {
     return this.restaurantsService.update(id, body);
   }
 

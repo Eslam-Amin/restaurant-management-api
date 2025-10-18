@@ -56,7 +56,10 @@ export class RestaurantsService {
     return restaurant;
   }
 
-  async update(id: string, updateDto: any): Promise<Restaurant> {
+  async update(
+    id: string,
+    updateDto: Partial<CreateRestaurantDto>,
+  ): Promise<Restaurant> {
     const updated = await this.restaurantModel.findByIdAndUpdate(
       id,
       updateDto,
