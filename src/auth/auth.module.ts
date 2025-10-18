@@ -13,4 +13,8 @@ import { MongooseModule } from '@nestjs/mongoose';
   controllers: [AuthController],
   providers: [AuthService, UsersService],
 })
-export class AuthModule {}
+export class AuthModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CurrentUserMiddleware).forRoutes('*');
+  }
+}
