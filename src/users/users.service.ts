@@ -17,9 +17,9 @@ export class UsersService {
     private userModel: Model<UserDocument>,
   ) {}
 
-  createOne(createDto: CreateUserDto): Promise<User> {
+  createOne(body: CreateUserDto): Promise<User> {
     try {
-      return this.userModel.create(createDto);
+      return this.userModel.create(body);
     } catch (err) {
       if (err.code === 11000) {
         throw new ConflictException('User with this email already exists');
