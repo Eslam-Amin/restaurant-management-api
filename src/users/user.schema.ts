@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { CuisineEnum } from 'src/enums/cuisine.enum';
 
 @Schema({ timestamps: true })
 export class User {
@@ -14,6 +15,9 @@ export class User {
 
   @Prop({ required: true })
   password: string;
+
+  @Prop({ type: [String], default: [], enum: CuisineEnum })
+  favoriteCuisines: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
