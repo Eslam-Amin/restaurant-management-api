@@ -3,14 +3,14 @@ import { Document, Types } from 'mongoose';
 import { CuisineEnum } from 'src/enums/cuisine.enum';
 
 @Schema({ timestamps: true })
-export class User {
+export class User extends Document {
   @Prop({ required: true })
   firstName: string;
 
   @Prop({ required: true })
   lastName: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, lowercase: true })
   email: string;
 
   @Prop({ required: true })
