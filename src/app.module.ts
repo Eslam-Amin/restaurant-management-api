@@ -14,7 +14,7 @@ import databaseConfig from './config/database.config';
     }),
 
     DatabaseModule,
-    DatabaseModule,
+    RestaurantsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
