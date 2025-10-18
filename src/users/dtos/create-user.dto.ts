@@ -16,4 +16,9 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(CuisineEnum, { each: true })
   favoriteCuisines: string[];
+  @IsString({
+    each: true,
+  })
+  @IsOptional()
+  followedRestaurants: string[];
 }
