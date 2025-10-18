@@ -50,7 +50,10 @@ export class RestaurantsController {
 
   @Get('/:identifier')
   async findByIdOrSlug(@Param('identifier') identifier: string) {
-    return this.restaurantsService.findByIdOrSlug(identifier);
+    return {
+      message: 'Restaurant found successfully',
+      data: await this.restaurantsService.findByIdentifier(identifier),
+    };
   }
 
   @Patch('/:id')
