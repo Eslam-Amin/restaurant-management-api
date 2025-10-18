@@ -2,19 +2,13 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { PaginationFilterDto } from 'src/dtos/pagination-filter.dto';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { UserDto } from './dtos/user.dto';
 
 @Controller('users')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private usersService: UsersService) {}
-
-  @Post()
-  async createUser(@Body() body: CreateUserDto) {
-    const createdUser = await this.usersService.createOne(body);
-    return {
-      message: 'User created successfully',
-      data: createdUser,
-    };
-  }
 
   @Get()
   async findAll(@Query() { page, limit }: PaginationFilterDto) {
