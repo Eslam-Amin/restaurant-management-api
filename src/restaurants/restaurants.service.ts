@@ -44,6 +44,7 @@ export class RestaurantsService {
         .find({ cuisines: cuisine })
         .skip(skip)
         .limit(limit);
+
       return {
         restaurantsCount,
         restaurants,
@@ -54,7 +55,7 @@ export class RestaurantsService {
       .find()
       .skip(skip)
       .limit(limit);
-    return { restaurantsCount, restaurants: await this.restaurantModel.find() };
+    return { restaurantsCount, restaurants };
   }
 
   async findByIdOrSlug(idOrSlug: string): Promise<Restaurant> {
