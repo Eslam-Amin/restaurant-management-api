@@ -35,24 +35,12 @@ export class RestaurantsService {
     limit: number,
     cuisine?: string,
   ): Promise<{ restaurantsCount: number; restaurants: Restaurant[] }> {
+    const filter = cuisine ? { cuisines: cuisine } : {};
     const skip = (page - 1) * limit;
-    if (cuisine) {
-      const restaurantsCount = await this.restaurantModel.countDocuments({
-        cuisines: cuisine,
-      });
-      const restaurants = await this.restaurantModel
-        .find({ cuisines: cuisine })
-        .skip(skip)
-        .limit(limit);
 
-      return {
-        restaurantsCount,
-        restaurants,
-      };
-    }
-    const restaurantsCount = await this.restaurantModel.countDocuments();
+    const restaurantsCount = await this.restaurantModel.countDocuments(filter);
     const restaurants = await this.restaurantModel
-      .find()
+      .find(filter)
       .skip(skip)
       .limit(limit);
     return { restaurantsCount, restaurants };
