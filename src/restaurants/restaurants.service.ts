@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Restaurant, RestaurantDocument } from './restaurant.schema';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
-import { Types } from 'mongoose';
+import { isValidMongodbId } from '../utils/isValidMonodbId';
 
 @Injectable()
 export class RestaurantsService {
@@ -52,7 +52,7 @@ export class RestaurantsService {
 
   async findByIdentifier(identifier: string): Promise<Restaurant> {
     let restaurant: Restaurant | null;
-    if (Types.ObjectId.isValid(identifier))
+    if (isValidMongodbId(identifier))
       restaurant = await this.restaurantModel.findById(identifier);
     else restaurant = await this.restaurantModel.findOne({ slug: identifier });
     if (!restaurant) throw new NotFoundException('Restaurant not found');

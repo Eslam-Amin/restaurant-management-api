@@ -11,10 +11,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
-import { User, UserSchema, UserDocument } from '../users/user.schema';
+import { User } from '../users/user.schema';
 import { UserDto } from 'src/users/dtos/user.dto';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 
 @Controller('auth')
 @Serialize(UserDto)
