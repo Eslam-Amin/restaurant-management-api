@@ -218,6 +218,38 @@ If you'd like to contribute:
 Coding style follows typical NestJS/TypeScript conventions. ESLint and
 Prettier configuration are included in the repo.
 
+## Future Enhancements
+
+The following features are planned for future releases:
+
+### Email Verification System
+
+- **Email verification for new users**: Implement a verification email system that sends a verification code to each new user's email address upon registration
+- **Email verification endpoint**: Add an endpoint to verify user email addresses using the verification code
+- **Email service integration**: Integrate with email service providers (e.g., SendGrid, AWS SES, or Nodemailer) for reliable email delivery
+- **Verification status tracking**: Track verification status in user profiles and restrict access to certain features until email is verified
+
+### JWT Authentication Enhancement
+
+- **Migrate from session-based to JWT authentication**: Replace the current session-based authentication system with JWT (JSON Web Tokens)
+- **JWT token management**: Implement access tokens and refresh tokens for enhanced security
+- **Token expiration handling**: Add automatic token refresh mechanisms and proper token expiration handling
+- **Stateless authentication**: Enable stateless authentication for better scalability and API compatibility
+
+### Performance Optimization
+
+- **Caching middleware**: Implement Redis-based caching middleware to enhance system performance
+- **Query result caching**: Cache complex database queries and aggregations to reduce response times
+- **API response caching**: Cache frequently accessed API responses (restaurant lists, nearby searches)
+- **Cache invalidation strategies**: Implement smart cache invalidation for data consistency
+- **Cache warming**: Pre-populate cache with commonly requested data
+
+### Additional Security Features
+
+- **Password reset functionality**: Implement secure password reset via email verification
+- **Account lockout protection**: Add protection against brute force attacks
+- **Two-factor authentication (2FA)**: Optional 2FA support for enhanced account security
+
 ## Notes & Next steps
 
 - Check `src/config/database.config.ts` and `src/database/database.module.ts` to
