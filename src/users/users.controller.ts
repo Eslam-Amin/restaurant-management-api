@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { PaginationFilterDto } from 'src/dtos/pagination-filter.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -10,6 +11,11 @@ export class UsersController {
 
   @Get()
   @Serialize(UserDto)
+  @ApiOperation({ summary: 'Get all Users with pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of users returned successfully.',
+  })
   async findAll(@Query() { page, limit }: PaginationFilterDto) {
     const { users, usersCount } = await this.usersService.findAll(page, limit);
     return {
@@ -26,6 +32,11 @@ export class UsersController {
 
   @Get('/:id')
   @Serialize(UserDto)
+  @ApiOperation({ summary: 'Get a specific user by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'User returned successfully.',
+  })
   async findOne(@Param('id') id: string) {
     const user = await this.usersService.findOne(id);
     return {
@@ -35,6 +46,14 @@ export class UsersController {
   }
 
   @Get('/:id/restaurants-recommendations')
+  @ApiOperation({
+    summary: 'Get user recommendations, similar restaurants',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'List of Users Shared Similar Restaurants returned successfully.',
+  })
   async findRestaurantsRecommendations(@Param('id') id: string) {
     const recommendations =
       await this.usersService.findSimilarUsersAndRestaurantsRecommendations(id);
