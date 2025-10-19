@@ -25,74 +25,193 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+<!--
+  README.md — Documentation for the Restaurant Management API
+  This project is a NestJS-based REST API that manages restaurants and users,
+  supports authentication (session-based), and provides features like
+  following restaurants, favoriting cuisines, and location-based nearby queries.
+-->
 
-```bash
-$ npm install
+# Restaurant Management API
+
+Lightweight REST API built with NestJS for managing restaurants and users. It
+includes session-based authentication, restaurant search and discovery, user
+profiles with favorite cuisines and followed restaurants, and Swagger API
+documentation.
+
+## Table of Contents
+
+- About
+- Features
+- Tech stack
+- Getting started
+  - Requirements
+  - Install
+  - Environment
+  - Run
+- API overview
+  - Auth endpoints
+  - Restaurants endpoints
+  - Swagger docs
+- Scripts
+- Testing
+- Contributing
+- License
+
+## About
+
+This repository contains the backend API for a restaurant discovery and
+management platform. It exposes endpoints to create and manage restaurants and
+users, supports following/unfollowing restaurants, toggling favorite cuisines,
+and querying nearby restaurants by latitude/longitude.
+
+The API is built with NestJS, uses MongoDB (via Mongoose) as the data store,
+and serves Swagger UI at `/api-docs` for interactive documentation.
+
+## Features
+
+- Session-based authentication (signup, login, logout, whoami)
+- Create, update, delete restaurants
+- Pagination and cuisine filtering
+- Nearby restaurants search using lat/lng
+- Follow/unfollow restaurants (protected)
+- Add/remove favorite cuisines (protected)
+- Swagger documentation available
+
+## Tech stack
+
+- Node.js (NestJS)
+- TypeScript
+- Express
+- MongoDB (Mongoose)
+- Swagger (OpenAPI) for docs
+
+## Getting started
+
+### Requirements
+
+- Node.js 18+ (recommend LTS)
+- npm
+- MongoDB instance (local or cloud)
+
+### Install
+
+Run:
+
+```powershell
+npm install
 ```
 
-## Compile and run the project
+### Environment
 
-```bash
-# development
-$ npm run start
+The project uses dotenv and loads `.env.<NODE_ENV>` files. Common variables:
 
-# watch mode
-$ npm run start:dev
+- PORT — server port (default 3000)
+- MONGO_URI — MongoDB connection string
+- COOKIE_KEY — key used for cookie-session
+- NODE_ENV — environment (development, production, test)
 
-# production mode
-$ npm run start:prod
+Create an environment file, for example `.env.development`:
+
+```text
+PORT=3000
+MONGO_URI=mongodb://localhost:27017/restaurant-db
+COOKIE_KEY=some_secure_random_value
+NODE_ENV=development
 ```
 
-## Run tests
+### Run the app
 
-```bash
-# unit tests
-$ npm run test
+Development:
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```powershell
+npm run start:dev
 ```
 
-## Deployment
+Production (build then run):
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```powershell
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The server exposes a simple health check at `/health` and prints the listening
+URL after startup.
 
-## Resources
+## API overview
 
-Check out a few resources that may come in handy when working with NestJS:
+Swagger UI is available when the app is running at `/api-docs`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Below is a short summary of the main endpoints (see Swagger for full details).
 
-## Support
+Auth (prefix: `/auth`)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- POST /auth/signup — Create a new user (body: firstName, lastName, email, password,...)
+- POST /auth/login — Login and create a session (body: email, password)
+- POST /auth/logout — Logout (clears session)
+- GET /auth/whoami — Returns the current authenticated user (requires session)
 
-## Stay in touch
+Restaurants (prefix: `/restaurants`)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- POST /restaurants — Create a restaurant (protected/provide payload)
+- GET /restaurants — List restaurants (query: page, limit, cuisine)
+- GET /restaurants/nearby?lat=<>&lng=<> — List nearby restaurants (page/limit supported)
+- GET /restaurants/:identifier — Get a restaurant by id or slug
+- PATCH /restaurants/:id — Update a restaurant
+- DELETE /restaurants/:id — Delete a restaurant
+- PATCH /restaurants/:id/follow — Follow a restaurant (authenticated)
+- PATCH /restaurants/:id/unfollow — Unfollow a restaurant (authenticated)
+- PATCH /restaurants/:cuisine/favorite — Add cuisine to favorites (authenticated)
+- PATCH /restaurants/:cuisine/unfavorite — Remove cuisine from favorites (authenticated)
+
+Note: Some endpoints are protected by an `AuthGuard` and require a valid
+session cookie to access.
+
+## Scripts
+
+Key npm scripts from `package.json`:
+
+- npm run start — start in development
+- npm run start:dev — start in watch mode
+- npm run start:prod — run built app
+- npm run build — compile project
+- npm run test — run unit tests
+- npm run test:e2e — run e2e tests
+- npm run test:cov — run tests with coverage
+
+## Testing
+
+The project uses Jest for testing. To run unit tests:
+
+```powershell
+npm run test
+```
+
+To run end-to-end tests:
+
+```powershell
+npm run test:e2e
+```
+
+## Contributing
+
+If you'd like to contribute:
+
+1. Fork the repository and create a branch for your change.
+2. Add tests for any new behavior.
+3. Run linting and tests locally.
+4. Open a pull request describing your changes.
+
+Coding style follows typical NestJS/TypeScript conventions. ESLint and
+Prettier configuration are included in the repo.
+
+## Notes & Next steps
+
+- Check `src/config/database.config.ts` and `src/database/database.module.ts` to
+  configure connection options for MongoDB.
+- If you plan to deploy, ensure secure COOKIE_KEY and proper NODE_ENV and
+  connection strings are set.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the terms in the repository (check package.json).
