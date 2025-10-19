@@ -15,7 +15,7 @@ import mongoose from 'mongoose';
 
         logger.log(`Connecting to MongoDB → ${uri}${dbName}`);
 
-        mongoose.set('debug', true);
+        mongoose.set('debug', configService.get('NODE_ENV') === 'development');
 
         return { uri, dbName };
       },
