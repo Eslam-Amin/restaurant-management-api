@@ -100,7 +100,7 @@ export class RestaurantsController {
   @Patch('/:id/follow')
   @UseGuards(AuthGuard)
   @Serialize(UserDto)
-  async followToggle(
+  async followRestaurant(
     @Param('id') id: Types.ObjectId,
     @CurrentUser() currentUser: User,
   ) {
@@ -113,7 +113,7 @@ export class RestaurantsController {
   @Patch('/:id/unfollow')
   @UseGuards(AuthGuard)
   @Serialize(UserDto)
-  async unFollowToggle(
+  async unFollowRestaurant(
     @Param('id') id: Types.ObjectId,
     @CurrentUser() currentUser: User,
   ) {
