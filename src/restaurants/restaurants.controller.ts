@@ -23,7 +23,13 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from 'src/users/dtos/user.dto';
 import { CuisineEnum } from 'src/enums/cuisine.enum';
 import { LowercasePipe } from 'src/pipes/lowerCase.pipe';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @Controller('restaurants')
 @ApiTags('Restaurants')
@@ -72,6 +78,24 @@ export class RestaurantsController {
     status: 200,
     description: 'Restaurants found successfully',
   })
+  @ApiQuery({
+    name: 'cuisine',
+    type: String,
+    description: 'The cuisine of the restaurants',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'The page number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'The number of restaurants per page',
+    required: false,
+  })
   async findAll(
     @Query() { page, limit }: PaginationFilterDto,
     @Query('cuisine') cuisine?: string,
@@ -95,6 +119,28 @@ export class RestaurantsController {
     status: 200,
     description:
       'Nearby restaurants found successfully by latitude and longitude',
+  })
+  @ApiQuery({
+    name: 'lat',
+    type: Number,
+    description: 'The latitude of the location',
+  })
+  @ApiQuery({
+    name: 'lng',
+    type: Number,
+    description: 'The longitude of the location',
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'The page number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'The number of restaurants per page',
+    required: false,
   })
   async findNearbyRestaurants(
     @Query() { lat, lng }: LatLngDto,

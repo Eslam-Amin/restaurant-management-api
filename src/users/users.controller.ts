@@ -3,9 +3,10 @@ import { UsersService } from './users.service';
 import { PaginationFilterDto } from 'src/dtos/pagination-filter.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -15,6 +16,18 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'List of users returned successfully.',
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'The page number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'The number of users per page',
+    required: false,
   })
   async findAll(@Query() { page, limit }: PaginationFilterDto) {
     const { users, usersCount } = await this.usersService.findAll(page, limit);
