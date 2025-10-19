@@ -7,11 +7,22 @@ import {
   Query,
   Patch,
   Delete,
+  UseGuards,
+  ParseEnumPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { PaginationFilterDto } from '../dtos/pagination-filter.dto';
 import { LatLngDto } from 'src/dtos/lat-lng.dto';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
+import { User } from 'src/users/user.schema';
+import { Types } from 'mongoose';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UserDto } from 'src/users/dtos/user.dto';
+import { CuisineEnum } from 'src/enums/cuisine.enum';
+import { LowercasePipe } from 'src/pipes/lowerCase.pipe';
 
 @Controller('restaurants')
 export class RestaurantsController {
@@ -87,6 +98,80 @@ export class RestaurantsController {
     return {
       message: 'Restaurant deleted successfully',
       data: {},
+    };
+  }
+
+  @Patch('/:id/follow')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async followRestaurant(
+    @Param('id') id: Types.ObjectId,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Restaurant has been Followed successfully',
+      data: await this.restaurantsService.follow(id, currentUser),
+    };
+  }
+
+  @Patch('/:id/unfollow')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async unFollowRestaurant(
+    @Param('id') id: Types.ObjectId,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Restaurant has been Unfollowed successfully',
+      data: await this.restaurantsService.unfollow(id, currentUser),
+    };
+  }
+
+  @Patch('/:cuisine/favorite')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async favoriteCuisineToggle(
+    @Param(
+      'cuisine',
+      LowercasePipe,
+      new ParseEnumPipe(CuisineEnum, {
+        exceptionFactory: (error) =>
+          new BadRequestException('Invalid Cuisine Provided'),
+      }),
+    )
+    cuisine: CuisineEnum,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Cuisine has been favorited successfully',
+      data: await this.restaurantsService.addCuisineToFavorites(
+        cuisine,
+        currentUser,
+      ),
+    };
+  }
+
+  @Patch('/:cuisine/unfavorite')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async unfavoriteCuisineToggle(
+    @Param(
+      'cuisine',
+      LowercasePipe,
+      new ParseEnumPipe(CuisineEnum, {
+        exceptionFactory: (error) =>
+          new BadRequestException('Invalid Cuisine Provided'),
+      }),
+    )
+    cuisine: CuisineEnum,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Cuisine has been unfavorited successfully',
+      data: await this.restaurantsService.removeCuisineFromFavorites(
+        cuisine,
+        currentUser,
+      ),
     };
   }
 }

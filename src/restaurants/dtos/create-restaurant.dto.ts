@@ -7,7 +7,7 @@ import {
   ValidateNested,
   IsEnum,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { LocationDto } from '../../dtos/location.dto';
 import { CuisineEnum } from '../../enums/cuisine.enum';
 
@@ -27,7 +27,8 @@ export class CreateRestaurantDto {
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(3)
-  @IsEnum(CuisineEnum, { each: true })
+  @IsEnum(CuisineEnum, { each: true, message: 'Invalid Cuisine Provided' })
+  @Transform(({ value }) => value.map((cuisine) => cuisine.toLowerCase()))
   cuisines: CuisineEnum[];
 
   @ValidateNested()

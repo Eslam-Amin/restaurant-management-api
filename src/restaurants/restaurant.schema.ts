@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { CuisineEnum } from '../enums/cuisine.enum';
 
 @Schema({ timestamps: true })
-export class Restaurant {
+export class Restaurant extends Document {
   @Prop({ required: true })
   nameEn: string;
 
@@ -21,7 +21,7 @@ export class Restaurant {
       'Must have between 1 to 3 cuisines',
     ],
   })
-  cuisines: string[];
+  cuisines: CuisineEnum[];
 
   @Prop({
     type: {
@@ -42,6 +42,7 @@ export class Restaurant {
 }
 const RestaurantSchema = SchemaFactory.createForClass(Restaurant);
 RestaurantSchema.index({ location: '2dsphere' });
-
+RestaurantSchema.set('toJSON', { virtuals: true });
+RestaurantSchema.set('toObject', { virtuals: true });
 export type RestaurantDocument = Restaurant & Document;
 export { RestaurantSchema };

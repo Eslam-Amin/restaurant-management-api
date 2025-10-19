@@ -1,20 +1,25 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { Restaurant, RestaurantDocument } from './restaurant.schema';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { isValidMongodbId } from '../utils/isValidMonodbId';
+import { User } from 'src/users/user.schema';
+import { UsersService } from 'src/users/users.service';
+import { CuisineEnum } from 'src/enums/cuisine.enum';
 
 @Injectable()
 export class RestaurantsService {
   constructor(
     @InjectModel(Restaurant.name)
     private restaurantModel: Model<RestaurantDocument>,
+    private usersService: UsersService,
   ) {}
 
   async createOne(createDto: CreateRestaurantDto): Promise<Restaurant> {
@@ -130,5 +135,46 @@ export class RestaurantsService {
     return {
       ...result[0],
     };
+  }
+
+  async follow(id: Types.ObjectId, currentUser: User) {
+    await this.findByIdentifier(id.toString());
+    if (currentUser.followedRestaurants.includes(id)) {
+      throw new BadRequestException('Restaurant already followed');
+    }
+    return this.usersService.updateOne(currentUser.id, {
+      followedRestaurants: [...currentUser.followedRestaurants, id],
+    });
+  }
+
+  async unfollow(id: Types.ObjectId, currentUser: User) {
+    await this.findByIdentifier(id.toString());
+    if (!currentUser.followedRestaurants.includes(id)) {
+      throw new BadRequestException('Restaurant not followed');
+    }
+    return this.usersService.updateOne(currentUser.id, {
+      followedRestaurants: currentUser.followedRestaurants.filter(
+        (restaurantId) => restaurantId.toString() !== id.toString(),
+      ),
+    });
+  }
+
+  async addCuisineToFavorites(cuisine: CuisineEnum, currentUser: User) {
+    if (currentUser.favoriteCuisines.includes(cuisine)) {
+      throw new BadRequestException('Cuisine already favorited');
+    }
+    return this.usersService.updateOne(currentUser.id, {
+      favoriteCuisines: [...currentUser.favoriteCuisines, cuisine],
+    });
+  }
+  async removeCuisineFromFavorites(cuisine: CuisineEnum, currentUser: User) {
+    if (!currentUser.favoriteCuisines.includes(cuisine)) {
+      throw new BadRequestException('Cuisine not favorited');
+    }
+    return this.usersService.updateOne(currentUser.id, {
+      favoriteCuisines: currentUser.favoriteCuisines.filter(
+        (favoriteCuisine) => favoriteCuisine !== cuisine,
+      ),
+    });
   }
 }

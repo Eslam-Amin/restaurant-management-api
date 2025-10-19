@@ -1,8 +1,12 @@
 import { Expose } from 'class-transformer';
+import { Restaurant } from 'src/restaurants/restaurant.schema';
+import { CuisineEnum } from 'src/enums/cuisine.enum';
 
 export class UserDto {
   @Expose()
   id: string;
+  @Expose()
+  _id: string;
   @Expose()
   email: string;
   @Expose()
@@ -18,7 +22,7 @@ export class UserDto {
   @Expose()
   updatedAt: Date;
   @Expose()
-  followedRestaurants: string[];
+  followedRestaurants: Restaurant[];
   @Expose()
-  favoriteCuisines: string[];
+  favoriteCuisines: CuisineEnum[];
 }
