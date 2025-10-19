@@ -167,6 +167,19 @@ Restaurants (prefix: `/restaurants`)
 Note: Some endpoints are protected by an `AuthGuard` and require a valid
 session cookie to access.
 
+## Postman collection
+
+The API is documented as a Postman collection which you can import into
+Postman for exploration and testing.
+
+- View the collection in Postman: https://documenter.getpostman.com/view/23525113/2sB3QQK81U
+
+To import into Postman:
+
+1. Open Postman -> File -> Import -> Paste the collection URL above or choose "Link" and paste it.
+2. The requests and example environments (if included) will be imported.
+3. Update the environment variables (e.g., base URL, auth) if necessary before running requests.
+
 ## Scripts
 
 Key npm scripts from `package.json`:
