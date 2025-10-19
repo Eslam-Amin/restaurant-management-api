@@ -8,6 +8,8 @@ import {
   Patch,
   Delete,
   UseGuards,
+  ParseEnumPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
@@ -19,6 +21,8 @@ import { Types } from 'mongoose';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from 'src/users/dtos/user.dto';
+import { CuisineEnum } from 'src/enums/cuisine.enum';
+import { LowercasePipe } from 'src/pipes/lowerCase.pipe';
 
 @Controller('restaurants')
 export class RestaurantsController {
@@ -120,6 +124,54 @@ export class RestaurantsController {
     return {
       message: 'Restaurant has been Unfollowed successfully',
       data: await this.restaurantsService.unfollow(id, currentUser),
+    };
+  }
+
+  @Patch('/:cuisine/favorite')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async favoriteCuisineToggle(
+    @Param(
+      'cuisine',
+      LowercasePipe,
+      new ParseEnumPipe(CuisineEnum, {
+        exceptionFactory: (error) =>
+          new BadRequestException('Invalid Cuisine Provided'),
+      }),
+    )
+    cuisine: CuisineEnum,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Cuisine has been favorited successfully',
+      data: await this.restaurantsService.addCuisineToFavorites(
+        cuisine,
+        currentUser,
+      ),
+    };
+  }
+
+  @Patch('/:cuisine/unfavorite')
+  @UseGuards(AuthGuard)
+  @Serialize(UserDto)
+  async unfavoriteCuisineToggle(
+    @Param(
+      'cuisine',
+      LowercasePipe,
+      new ParseEnumPipe(CuisineEnum, {
+        exceptionFactory: (error) =>
+          new BadRequestException('Invalid Cuisine Provided'),
+      }),
+    )
+    cuisine: CuisineEnum,
+    @CurrentUser() currentUser: User,
+  ) {
+    return {
+      message: 'Cuisine has been unfavorited successfully',
+      data: await this.restaurantsService.removeCuisineFromFavorites(
+        cuisine,
+        currentUser,
+      ),
     };
   }
 }
