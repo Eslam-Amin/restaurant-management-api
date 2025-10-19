@@ -42,6 +42,7 @@ export class Restaurant extends Document {
 }
 const RestaurantSchema = SchemaFactory.createForClass(Restaurant);
 RestaurantSchema.index({ location: '2dsphere' });
-
+RestaurantSchema.set('toJSON', { virtuals: true });
+RestaurantSchema.set('toObject', { virtuals: true });
 export type RestaurantDocument = Restaurant & Document;
 export { RestaurantSchema };
