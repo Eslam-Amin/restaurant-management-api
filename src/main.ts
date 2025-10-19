@@ -23,9 +23,10 @@ async function bootstrap() {
     .setTitle('Restaurant Management API')
     .setDescription('API for restaurant management and user recommendations')
     .setVersion('1.0')
+    .addTag('App')
     .addTag('Restaurants')
-    .addTag('Users')
     .addTag('Auth')
+    .addTag('Users')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
